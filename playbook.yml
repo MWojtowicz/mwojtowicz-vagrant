@@ -5,31 +5,34 @@
   vars_files:
     - vars/all.yml
   roles:
-    - mwojtowicz.system
-    - geerlingguy.ntp
-    - geerlingguy.firewall
-    - geerlingguy.git
-    - geerlingguy.mariadb
-    - geerlingguy.memcached
-    - geerlingguy.ruby
-    - geerlingguy.nodejs
-    - geerlingguy.java
-    - geerlingguy.elasticsearch
-    - geerlingguy.daemonize
-    - geerlingguy.mailhog
-    - geerlingguy.varnish
-    - geerlingguy.apache
-    - geerlingguy.php
-    - geerlingguy.apache-php-fpm
-    - geerlingguy.composer
-    - geerlingguy.php-mysql
-    - geerlingguy.phpmyadmin
-    - geerlingguy.php-pecl
-    - geerlingguy.php-pear
-    - geerlingguy.php-xdebug
-    - geerlingguy.redis
-    - geerlingguy.php-redis
-    - geerlingguy.pimpmylog
-    - mwojtowicz.putty
-    - mwojtowicz.app
-#    - mwojtowicz.gitprompt
+    - MWojtowicz.devbox
+  tasks:
+    - name: "Create /var/cms directory"
+      file:
+        path: /var/cms
+        state: directory
+        mode: 0775
+        owner: apache
+        group: apache
+
+    - name: "Set /var/cms facl"
+      command: setfacl -R -m u:"apache":rwX -m u:vagrant:rwX /var/cms
+      args:
+        chdir: /
+
+    - name: "Set /var/cms facl"
+      command: setfacl -dR -m u:"apache":rwX -m u:vagrant:rwX /var/cms
+      args:
+        chdir: /
+
+    - name: "nginx vHosts"
+      template:
+          src: "{{ item }}"
+          dest: /etc/nginx/conf.d/
+          owner: nginx
+          group: nginx
+          mode: 0644
+          backup: yes
+      with_fileglob:
+        - nginx/vhosts/*
+      notify: reload nginx

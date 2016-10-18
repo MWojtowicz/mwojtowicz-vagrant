@@ -34,11 +34,11 @@ end
 Vagrant.configure("2") do |config|
   config.vm.network "private_network", ip: "192.168.50.5"
   config.vm.network "private_network", type: "dhcp"
-  config.vm.box = "ubuntu/xenial64"
+  config.vm.box = "centos/7"
 
   if Vagrant.has_plugin?("vagrant-hostsupdater")
     config.hostsupdater.aliases = [
-        "cms.vm", "admin.cms.vm"
+        "cms.vm", "admin.cms.vm", "logs.cms.vm", "mailhog.cms.vm", "phpmyadmin.cms.vm"
     ]
     config.hostsupdater.remove_on_suspend = false
   end
@@ -50,25 +50,24 @@ Vagrant.configure("2") do |config|
   end
 
   mountDir(config, "./", "/vagrant")
-  mountDir(config, "../cms", "/var/www/cms")
+  mountDir(config, "../kurs-symfony", "/var/www/cms")
 
   if which('ansible-playbook')
     config.vm.provision "ansible" do |ansible|
       ansible.playbook = "playbook.yml"
       ansible.inventory_path = "inventories/dev"
       ansible.limit = "all"
-      ansible.verbose = "vvvv"
+      ansible.verbose = "vv"
     end
   else
     config.vm.provision "shell", inline: <<-SHELL
-      sudo apt-get update
-      sudo apt-get install ansible -y
+      sudo yum install epel-release -y
+      sudo yum install ansible -y
       sudo cp /vagrant/inventories/dev /etc/ansible/hosts -f
       chmod 666 /etc/ansible/hosts
       cat /vagrant/files/authorized_keys >> ~/.ssh/authorized_keys
+      sudo ansible-galaxy install MWojtowicz.devbox
       sudo ansible-playbook /vagrant/playbook.yml -e hostname=$1 --connection=local
     SHELL
   end
-
-  #config.vm.provision "shell", inline: "sudo service apache2 start", run: "always"
 end

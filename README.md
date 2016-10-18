@@ -1,4 +1,4 @@
-# Witaj w kursie Symfony UW-Team.org!
+# Witaj!
 
 ## Katalogi
 
