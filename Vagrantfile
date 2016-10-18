@@ -21,45 +21,36 @@ def mountDir(config, host, guest)
         elsif Vagrant::Util::Platform.linux?
           config.vm.synced_folder host, guest, id: "v-root", mount_options: ["rw", "tcp", "nolock", "noacl", "async"], type: "nfs", nfs_udp: true
         else
-          config.vm.synced_folder host, guest, type: "virtualbox"
+          if Vagrant.has_plugin?("vagrant-winnfsd")
+            config.vm.synced_folder host, guest, type: "nfs"
+          else
+            config.vm.synced_folder host, guest, type: "virtualbox"
+          end
         end
     end
     return nil
 end
 
 Vagrant.configure("2") do |config|
-  config.vm.network "private_network", ip: "192.168.50.4"
-  config.vm.box = "centos/7"
+  config.vm.network "private_network", ip: "192.168.50.5"
+  config.vm.network "private_network", type: "dhcp"
+  config.vm.box = "ubuntu/xenial64"
 
   if Vagrant.has_plugin?("vagrant-hostsupdater")
     config.hostsupdater.aliases = [
-        "e1v.vm", "admin.e1v.vm", "logs.e1v.vm", "mailhog.e1v.vm",
-        "deploy.e1v.vm", "techlunch.e1v.vm"
+        "cms.vm", "admin.cms.vm"
     ]
     config.hostsupdater.remove_on_suspend = false
   end
 
   config.vm.provider "virtualbox" do |vb|
-    vb.name = "EOV-Devbox"
+    vb.name = "CMS-Devbox"
     vb.cpus = 2
     vb.memory = "1024"
   end
 
-  if Vagrant.has_plugin?("vagrant-cachier")
-    config.cache.scope = :box
-  end
-
-  config.vm.provision "shell", run: "always" do |s|
-    s.inline = "sudo selinuxenabled 0"
-    s.inline = "sudo setenforce 0"
-  end
-
   mountDir(config, "./", "/vagrant")
-  mountDir(config, "../rtcpiv", "/var/www/rtcpiv")
-  mountDir(config, "../optrtcbin", "/opt/rtc/bin")
-  mountDir(config, "../services", "/var/piv/services")
-  mountDir(config, "../deployment-service", "/srv/www/deployment-service/current")
-  mountDir(config, "../tech_lunch_slides", "/var/www/html/tech_lunch_slides")
+  mountDir(config, "../cms", "/var/www/cms")
 
   if which('ansible-playbook')
     config.vm.provision "ansible" do |ansible|
@@ -70,13 +61,14 @@ Vagrant.configure("2") do |config|
     end
   else
     config.vm.provision "shell", inline: <<-SHELL
-      sudo yum install epel-release -y
-      sudo yum update
-      sudo yum install ansible -y
+      sudo apt-get update
+      sudo apt-get install ansible -y
       sudo cp /vagrant/inventories/dev /etc/ansible/hosts -f
       chmod 666 /etc/ansible/hosts
-      cat /vagrant/files/authorized_keys >> /home/vagrant/.ssh/authorized_keys
+      cat /vagrant/files/authorized_keys >> ~/.ssh/authorized_keys
       sudo ansible-playbook /vagrant/playbook.yml -e hostname=$1 --connection=local
     SHELL
   end
+
+  #config.vm.provision "shell", inline: "sudo service apache2 start", run: "always"
 end

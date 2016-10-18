@@ -8,34 +8,28 @@
     - mwojtowicz.system
     - geerlingguy.ntp
     - geerlingguy.firewall
-    - geerlingguy.repo-epel
-    - geerlingguy.repo-remi
-#    - geerlingguy.repo-puias
     - geerlingguy.git
     - geerlingguy.mariadb
     - geerlingguy.memcached
     - geerlingguy.ruby
-    - python27
     - geerlingguy.nodejs
     - geerlingguy.java
     - geerlingguy.elasticsearch
     - geerlingguy.daemonize
     - geerlingguy.mailhog
-#    - geerlingguy.varnish
+    - geerlingguy.varnish
     - geerlingguy.apache
-#
     - geerlingguy.php
+    - geerlingguy.apache-php-fpm
     - geerlingguy.composer
     - geerlingguy.php-mysql
     - geerlingguy.phpmyadmin
     - geerlingguy.php-pecl
     - geerlingguy.php-pear
     - geerlingguy.php-xdebug
-    - beanstalkd
-#
-#    - geerlingguy.redis
-#    - geerlingguy.php-redis
-#
+    - geerlingguy.redis
+    - geerlingguy.php-redis
     - geerlingguy.pimpmylog
+    - mwojtowicz.putty
+    - mwojtowicz.app
 #    - mwojtowicz.gitprompt
-    - engageonevideo.app

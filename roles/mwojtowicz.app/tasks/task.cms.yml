@@ -1,11 +1,11 @@
 - name: Install additional system packages.
-  yum: name={{ item }} state=latest
-  with_items: "{{ eov_packages_deployment_service }}"
+  apt: name={{ item }} state=latest
+  with_items: "{{ cms_packages }}"
   notify: restart apache
 
-- name: "deployment-service vhost"
-  template: src="files/deployment-service/vhost.j2" dest="/etc/httpd/conf.d/deployment-service.conf"
-  notify: restart apache
+- name: "cms vhost"
+  template: src="files/cms/vhost.j2" dest="/etc/apache2/sites-available/cms.conf"
 
-- name: Copy deployment-service cron.d
-  template: src="files/deployment-service/cron.j2" dest=/etc/cron.d/deployment-service.cron
+- name: "cms vhost"
+  command: /usr/sbin/a2ensite cms creates=/etc/apache2/sites-enabled/cms
+  notify: restart apache

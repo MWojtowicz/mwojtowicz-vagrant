@@ -1,10 +1,18 @@
-<VirtualHost *:80>
-    ServerName techlunch.e1v.vm
-    DocumentRoot /var/www/html/tech_lunch_slides/web
+<VirtualHost *:8080>
+    ServerName cms.vm
+    ServerAlias admin.cms.vm
+    DocumentRoot /var/www/cms/web
 
-    <Directory /var/www/html/tech_lunch_slides/web>
+    <FilesMatch \.php$>
+        SetHandler proxy:fcgi://127.0.0.1:9000
+    </FilesMatch>
+
+    <Directory /var/www/cms/web>
         Options Indexes FollowSymLinks
         AllowOverride All
         Require all granted
     </Directory>
+
+    ErrorLog /var/www/cms/var/logs/apache_error.log
+    CustomLog /var/www/cms/var/logs/apache_access.log combined
 </VirtualHost>

@@ -1,6 +1,6 @@
 ---
-- name: Install putty
-  yum: name=putty state=latest
+- name: Build putty
+  include: build.yml
   when: ansible_os_family == 'RedHat'
 
 - name: Install putty
@@ -8,6 +8,13 @@
   when: ansible_os_family == 'Debian'
 
 - name: Convert OpenSSH key to PPK format
+  command: /usr/local/bin/puttygen private_key -O private -o private_key.ppk
+  args:
+    chdir: /vagrant/.vagrant/machines/default/virtualbox
+  when: ansible_os_family == 'RedHat'
+
+- name: Convert OpenSSH key to PPK format
   command: puttygen private_key -O private -o private_key.ppk
   args:
     chdir: /vagrant/.vagrant/machines/default/virtualbox
+  when: ansible_os_family == 'Debian'

@@ -58,3 +58,4 @@
 - include: configure.yml
 - include: configure-apcu.yml
 - include: configure-fpm.yml
+- include: configure-opcache.yml
