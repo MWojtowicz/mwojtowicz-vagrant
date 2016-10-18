@@ -1,0 +1,38 @@
+---
+- name: Check if PuTTY was builded
+  stat: path=/etc/putty
+  register: putty
+
+- name: Download PuTTY source
+  get_url:
+    url: https://the.earth.li/~sgtatham/putty/latest/putty-0.67.tar.gz
+    dest: /root/putty.tar.gz
+  when: not putty.stat.exists
+
+- name: Unarchive PuTTY
+  unarchive:
+    src: /root/putty.tar.gz
+    dest: /etc
+  when: not putty.stat.exists
+
+- name: Move PuTTY
+  command: mv /etc/putty-0.67 /etc/putty
+  when: not putty.stat.exists
+
+- name: Configure PuTTY
+  command: ./configure && make
+  args:
+    chdir: /etc/putty/unix
+  when: not putty.stat.exists
+
+- name: Make PuTTY
+  command: make
+  args:
+    chdir: /etc/putty/unix
+  when: not putty.stat.exists
+
+- name: Install PuTTY
+  command: make install
+  args:
+    chdir: /etc/putty/unix
+  when: not putty.stat.exists

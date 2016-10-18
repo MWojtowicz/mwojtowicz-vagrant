@@ -1,0 +1,17 @@
+---
+- name: upgrade all packages
+  yum: name=* state=latest
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: Install additional system packages.
+  yum: name={{ item }} state=latest
+  with_items: "{{ system_packages }}"
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: "Update /etc/hosts file IPv4"
+  lineinfile: dest=/etc/hosts regexp='^127.0.0.1' line="127.0.0.1 {{item}}" state=present
+  with_items: "{{ host_names }}"
+
+- name: "Update /etc/hosts file IPv6"
+  lineinfile: dest=/etc/hosts regexp='^::1' line="::1 {{item}}" state=present
+  with_items: "{{ host_names }}"

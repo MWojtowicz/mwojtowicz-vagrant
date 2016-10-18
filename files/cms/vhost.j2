@@ -1,0 +1,10 @@
+<VirtualHost *:80>
+    ServerName techlunch.e1v.vm
+    DocumentRoot /var/www/html/tech_lunch_slides/web
+
+    <Directory /var/www/html/tech_lunch_slides/web>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>

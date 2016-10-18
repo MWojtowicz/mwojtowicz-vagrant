@@ -1,0 +1,7 @@
+<VirtualHost *:8080>
+    ServerName mailhog.cms.vm
+    ProxyPreserveHost On
+    ProxyRequests Off
+    ProxyPass / http://localhost:8025/
+    ProxyPassReverse / http://localhost:8025/
+</VirtualHost>

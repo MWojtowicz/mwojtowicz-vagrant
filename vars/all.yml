@@ -1,0 +1,83 @@
+---
+firewall_allowed_tcp_ports:
+  - "22"
+  - "25"
+  - "80"
+  - "443"
+  - "1025"
+  - "8025"
+
+system_packages:
+  - libselinux-python
+  - screen
+  - mc
+  - nano
+  - vim
+  - openssl-devel
+  - autoconf
+  - automake
+  - binutils
+  - bison
+  - flex
+  - gcc
+  - gcc-c++
+  - gettext
+  - libtool
+  - make
+  - patch
+  - pkgconfig
+  - redhat-rpm-config
+  - rpm-build
+  - rpm-sign
+  - wget
+  - curl
+
+java_packages:
+  - java-1.7.0-openjdk
+
+nodejs_version: 4.x
+nodejs_npm_global_packages:
+  - name: bower
+  - name: gulp
+  - name: node-sass
+
+vhosts:
+  - runtime
+  - dashboard
+  - logs
+
+php_packages:
+#  - php-apc
+  - php-mcrypt
+  - php-common
+  - php-pear
+  - php-devel
+  - php-intl
+  - php-mbstring
+  - php-json
+  - php-gd
+  - php-xml
+  - php-soap
+
+php_enable_php_fpm: false
+
+php_pecl_extensions:
+  - ZendOpcache
+  - APCu-4.0.11
+
+php_enable_apc: false
+
+php_pear_channels: []
+php_pear_libraries:
+  - "PHP_CodeSniffer"
+  - "Mail"
+  - "Mail_Mime"
+  - "Net_SMTP"
+
+host_names:
+  - e1v.vm
+  - admin.e1v.vm
+  - deploy.e1v.vm
+  - techlunch.e1v.vm
+  - logs.e1v.vm
+  - mailhog.e1v.vm

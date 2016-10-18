@@ -1,0 +1,50 @@
+---
+- name: Install additional system packages.
+  yum: name={{ item }} state=latest
+  with_items:
+    - php
+    - python-devel
+    - MariaDB-devel
+  notify: restart apache
+
+- name: Install the Python MySQL module
+  pip: name=MySQL-python
+
+- name: "Create required directories"
+  file: path="{{ item }}" state=directory mode=0755 owner=apache group=apache
+  with_items:
+    - "/etc/piv"
+    - "/etc/piv/admin"
+    - "/var/piv"
+    - "/var/piv/cache"
+    - "/var/rtc"
+    - "/var/rtc/log"
+    - "/var/rtc/editor"
+    - "/var/rtc/output"
+    - "/var/rtc/published"
+
+- name: "Check if rtcpiv project has been cloned"
+  stat: path=/var/www/rtcpiv
+  register: rtcpiv
+
+- include: task.rtcpiv.yml
+  when: rtcpiv.stat.exists
+
+- name: "Check if deployment-service project has been cloned"
+  stat: path=/srv/www/deployment-service/current
+  register: deploymentservice
+
+- include: task.deployment.service.yml
+  when: deploymentservice.stat.exists
+
+- name: "Check if tech_lunch_slides project has been cloned"
+  stat: path=/var/www/html/tech_lunch_slides
+  register: techlunch
+
+- include: task.techlunch.yml
+  when: techlunch.stat.exists
+
+- name: "Pimpmylog config"
+  template: src={{ item }} dest="/var/www/pimpmylog/config.user.php"
+  with_fileglob:
+    - files/pimpmylogs.j2

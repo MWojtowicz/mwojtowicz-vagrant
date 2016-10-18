@@ -1,0 +1,11 @@
+- name: Install additional system packages.
+  yum: name={{ item }} state=latest
+  with_items: "{{ eov_packages_deployment_service }}"
+  notify: restart apache
+
+- name: "deployment-service vhost"
+  template: src="files/deployment-service/vhost.j2" dest="/etc/httpd/conf.d/deployment-service.conf"
+  notify: restart apache
+
+- name: Copy deployment-service cron.d
+  template: src="files/deployment-service/cron.j2" dest=/etc/cron.d/deployment-service.cron
