@@ -38,7 +38,7 @@ Vagrant.configure("2") do |config|
 
   if Vagrant.has_plugin?("vagrant-hostsupdater")
     config.hostsupdater.aliases = [
-        "cms.vm", "admin.cms.vm", "logs.cms.vm", "mailhog.cms.vm", "phpmyadmin.cms.vm"
+        "cms.vm", "admin.cms.vm", "logs.cms.vm", "mailhog.cms.vm", "phpmyadmin.cms.vm", "adminlte.cms.vm"
     ]
     config.hostsupdater.remove_on_suspend = false
   end
